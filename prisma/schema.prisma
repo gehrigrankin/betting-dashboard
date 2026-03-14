@@ -1,0 +1,171 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Sport {
+  NBA
+}
+
+enum DashboardTemplateKind {
+  NBA_PLAYER_PROPS
+  NBA_TEAM_MATCHUP
+  NBA_GAME_PREP
+  CUSTOM
+}
+
+enum WidgetType {
+  PLAYER_SEASON_AVERAGE
+  PLAYER_RECENT_TREND
+  PLAYER_HOME_AWAY_SPLIT
+  PLAYER_VS_OPPONENT
+  TEAM_RECENT_FORM
+  TEAM_REST_DAYS
+  TEAM_ROAD_TRIP
+  INJURY_REPORT
+  NOTES
+}
+
+model User {
+  id         String      @id
+  dashboards Dashboard[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Dashboard {
+  id           String                @id @default(cuid())
+  userId       String
+  user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  sport        Sport                 @default(NBA)
+  templateKind DashboardTemplateKind @default(CUSTOM)
+  matchupLabel String?
+  isArchived   Boolean               @default(false)
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  widgets      DashboardWidget[]
+
+  @@index([userId, sport])
+}
+
+model DashboardWidget {
+  id          String     @id @default(cuid())
+  dashboardId String
+  dashboard   Dashboard  @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+  type        WidgetType
+  title       String
+  config      Json
+  positionX   Int        @default(0)
+  positionY   Int        @default(0)
+  width       Int        @default(6)
+  height      Int        @default(4)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([dashboardId, type])
+}
+
+model Team {
+  id              String         @id @default(cuid())
+  sport           Sport          @default(NBA)
+  externalId      String
+  name            String
+  abbreviation    String
+  city            String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  homeGames       Game[]         @relation("HomeTeam")
+  awayGames       Game[]         @relation("AwayTeam")
+  players         Player[]
+  playerGameStats PlayerGameStat[]
+  teamGameStats   TeamGameStat[]
+
+  @@unique([sport, externalId])
+  @@unique([sport, abbreviation])
+}
+
+model Player {
+  id              String           @id @default(cuid())
+  sport           Sport            @default(NBA)
+  externalId      String
+  fullName        String
+  teamId          String?
+  team            Team?            @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  position        String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  playerGameStats PlayerGameStat[]
+
+  @@unique([sport, externalId])
+  @@index([teamId])
+}
+
+model Game {
+  id             String           @id @default(cuid())
+  sport          Sport            @default(NBA)
+  externalId     String
+  startTime      DateTime
+  status         String?
+  homeTeamId     String
+  awayTeamId     String
+  homeTeam       Team             @relation("HomeTeam", fields: [homeTeamId], references: [id], onDelete: Cascade)
+  awayTeam       Team             @relation("AwayTeam", fields: [awayTeamId], references: [id], onDelete: Cascade)
+  playerGameStats PlayerGameStat[]
+  teamGameStats   TeamGameStat[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@unique([sport, externalId])
+  @@index([startTime])
+  @@index([homeTeamId, awayTeamId])
+}
+
+model PlayerGameStat {
+  id         String   @id @default(cuid())
+  playerId   String
+  gameId     String
+  teamId     String?
+  minutes    Decimal? @db.Decimal(5, 2)
+  points     Int?
+  rebounds   Int?
+  assists    Int?
+  steals     Int?
+  blocks     Int?
+  threesMade Int?
+  turnovers  Int?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  player     Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  game       Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  team       Team?    @relation(fields: [teamId], references: [id], onDelete: SetNull)
+
+  @@unique([playerId, gameId])
+  @@index([teamId])
+}
+
+model TeamGameStat {
+  id               String   @id @default(cuid())
+  teamId           String
+  gameId           String
+  isHome           Boolean
+  points           Int?
+  offensiveRating  Decimal? @db.Decimal(6, 2)
+  defensiveRating  Decimal? @db.Decimal(6, 2)
+  pace             Decimal? @db.Decimal(6, 2)
+  restDays         Int?
+  roadTripGame     Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  team             Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  game             Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, gameId])
+  @@index([isHome, restDays])
+}
+
