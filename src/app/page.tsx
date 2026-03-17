@@ -1,5 +1,7 @@
 import Link from "next/link"
-import { dashboardTemplates, sampleDashboards } from "@/lib/mock-dashboards"
+import { isClerkConfigured } from "@/lib/clerk"
+import { dashboardStrategyDefinitions } from "@/lib/dashboard-definitions"
+import { dashboardTemplates } from "@/lib/mock-dashboards"
 
 export default function Home() {
   return (
@@ -21,23 +23,25 @@ export default function Home() {
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
-                href="/dashboard"
+                href={isClerkConfigured ? "/dashboard" : "/dashboard"}
                 className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
               >
-                See sample dashboards
+                {isClerkConfigured ? "Open your dashboards" : "Open dashboards"}
               </Link>
               <Link
                 href="/dashboard/new"
                 className="inline-flex h-10 items-center justify-center rounded-lg border border-border px-4 text-sm font-medium transition hover:bg-muted"
               >
-                Start from a template
+                {isClerkConfigured ? "Start building" : "Start from a template"}
               </Link>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-lg border bg-card p-4">
-                <p className="text-2xl font-semibold">{sampleDashboards.length}</p>
-                <p className="text-sm text-muted-foreground">Sample dashboards</p>
+                <p className="text-2xl font-semibold">
+                  {dashboardStrategyDefinitions.filter((strategy) => strategy.key !== "custom").length}
+                </p>
+                <p className="text-sm text-muted-foreground">Dynamic strategies</p>
               </div>
               <div className="rounded-lg border bg-card p-4">
                 <p className="text-2xl font-semibold">{dashboardTemplates.length}</p>
@@ -73,13 +77,20 @@ export default function Home() {
 
         <section className="grid gap-6 lg:grid-cols-3">
           {dashboardTemplates.map((template) => (
-            <div key={template.id} className="rounded-lg border bg-card p-5 shadow-sm">
+            <Link
+              key={template.id}
+              href={`/dashboard/new?template=${template.id}`}
+              className="rounded-lg border bg-card p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30"
+            >
               <p className="text-sm font-medium text-primary">{template.name}</p>
               <p className="mt-2 text-sm text-muted-foreground">
                 {template.description}
               </p>
               <p className="mt-4 text-sm text-foreground">{template.idealFor}</p>
-            </div>
+              <p className="mt-4 text-sm font-medium text-primary">
+                Start from template →
+              </p>
+            </Link>
           ))}
         </section>
       </div>

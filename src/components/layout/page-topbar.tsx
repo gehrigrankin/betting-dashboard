@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { ChevronLeft } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 
@@ -10,9 +11,18 @@ type PageTopbarProps = {
 }
 
 export function PageTopbar({
-  backHref,
+  backHref: backHrefProp,
   backLabel = "Back",
 }: PageTopbarProps) {
+  const pathname = usePathname()
+
+  // When on /dashboard/[id]/edit, show "Back to board" → /dashboard/[id]
+  const editMatch = pathname?.match(/^\/dashboard\/([^/]+)\/edit$/)
+  const backHref = editMatch
+    ? `/dashboard/${editMatch[1]}`
+    : backHrefProp
+  const backLabelResolved = editMatch ? "Back to board" : backLabel
+
   return (
     <div className="px-6 py-3">
       <div className="mx-auto flex max-w-6xl items-center gap-3">
@@ -26,7 +36,7 @@ export function PageTopbar({
             })}
           >
             <ChevronLeft className="size-4" />
-            {backLabel}
+            {backLabelResolved}
           </Link>
         ) : (
           <div className="h-9" />

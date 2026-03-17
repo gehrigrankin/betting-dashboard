@@ -15,7 +15,18 @@ enum DashboardTemplateKind {
   NBA_PLAYER_PROPS
   NBA_TEAM_MATCHUP
   NBA_GAME_PREP
+  AWAY_TO_AWAY_FADE
   CUSTOM
+}
+
+enum DashboardStrategyKey {
+  CUSTOM
+  AWAY_TO_AWAY_FADE
+}
+
+enum DashboardEntityType {
+  TEAM
+  PLAYER
 }
 
 enum WidgetType {
@@ -33,25 +44,51 @@ enum WidgetType {
 model User {
   id         String      @id
   dashboards Dashboard[]
+  alerts     Alert[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+}
+
+model Alert {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dashboardId  String?
+  type         String   // e.g. "line_move"
+  config       Json     // e.g. { playerId, marketName, threshold }
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Dashboard {
   id           String                @id @default(cuid())
   userId       String
   user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shareToken   String?               @unique
   name         String
   description  String?
   sport        Sport                 @default(NBA)
   templateKind DashboardTemplateKind @default(CUSTOM)
+  strategyKey  DashboardStrategyKey?
+  entityType   DashboardEntityType?
+  entityExternalId String?
+  entityName   String?
+  entitySubtitle String?
+  entityTeamExternalId String?
+  entityTeamName String?
+  opponentExternalId String?
+  opponentName String?
+  season       Int?
   matchupLabel String?
   isArchived   Boolean               @default(false)
+  isTemplate   Boolean               @default(false)
   createdAt    DateTime              @default(now())
   updatedAt    DateTime              @updatedAt
   widgets      DashboardWidget[]
 
   @@index([userId, sport])
+  @@index([userId, strategyKey])
 }
 
 model DashboardWidget {

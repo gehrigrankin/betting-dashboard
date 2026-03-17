@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import type { TrendPoint } from "@/lib/mock-dashboards"
+import type { TrendPoint } from "@/lib/dashboard-widgets"
 
 type TrendChartProps = {
   data: TrendPoint[]

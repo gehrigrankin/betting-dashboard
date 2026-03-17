@@ -76,8 +76,10 @@ export function Sidebar({ children, className }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "hidden border-r border-border bg-card transition-[width] duration-200 md:flex md:flex-col",
-        open ? "md:w-64" : "md:w-[72px]",
+        "border-r border-sidebar-border bg-sidebar transition-[width] duration-200 md:flex md:flex-col",
+        open
+          ? "fixed inset-y-0 left-0 z-40 flex w-64 flex-col md:relative md:w-64"
+          : "hidden md:flex md:w-[72px] md:flex-col",
         className
       )}
     >
@@ -222,5 +224,24 @@ export function SidebarTrigger({
     >
       <PanelLeft className="size-4" />
     </Button>
+  )
+}
+
+/** Renders a backdrop on mobile when sidebar is open; clicking it closes the sidebar. */
+export function SidebarOverlay() {
+  const { open, setOpen } = useSidebar()
+
+  if (!open) {
+    return null
+  }
+
+  return (
+    <div
+      aria-hidden
+      className="fixed inset-0 z-30 bg-black/50 md:hidden"
+      onClick={() => setOpen(false)}
+      role="button"
+      tabIndex={-1}
+    />
   )
 }

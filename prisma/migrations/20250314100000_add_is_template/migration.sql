@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Dashboard" ADD COLUMN IF NOT EXISTS "isTemplate" BOOLEAN NOT NULL DEFAULT false;

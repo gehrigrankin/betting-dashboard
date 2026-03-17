@@ -1,12 +1,5 @@
 import type { StoredDashboard } from "@/lib/dashboard-builder"
 
-const toneClasses = {
-  lavender: "bg-zinc-900 border-zinc-800",
-  blue: "bg-zinc-800/90 border-zinc-700",
-  yellow: "bg-zinc-900/80 border-zinc-700",
-  orange: "bg-rose-950/40 border-rose-800/70",
-} as const
-
 export function SavedDashboardCanvas({
   dashboard,
 }: {
@@ -33,7 +26,7 @@ export function SavedDashboardCanvas({
           return (
             <article
               key={panel.id}
-              className={`overflow-hidden rounded-lg border p-4 shadow-sm ${toneClasses[panel.tone]}`}
+              className="glass-panel overflow-hidden rounded-2xl p-4"
               style={{
                 gridColumn: `${layout.x + 1} / span ${layout.w}`,
                 gridRow: `${layout.y + 1} / span ${layout.h}`,
@@ -66,7 +59,7 @@ export function SavedDashboardCanvas({
                 ) : null}
 
                 {panel.kind === "note" ? (
-                  <div className="rounded-md bg-background/55 px-3 py-2 text-sm text-foreground/80">
+                  <div className="glass-chip rounded-xl px-3 py-2 text-sm text-foreground/80">
                     {panel.notes[0] || "No note added yet."}
                   </div>
                 ) : null}
@@ -78,7 +71,7 @@ export function SavedDashboardCanvas({
                       .map((note) => (
                         <div
                           key={note}
-                          className="rounded-md bg-background/55 px-3 py-2 text-sm text-foreground/80"
+                          className="glass-chip rounded-xl px-3 py-2 text-sm text-foreground/80"
                         >
                           {note}
                         </div>

@@ -11,8 +11,27 @@ if (!databaseUrl) {
   throw new Error("DATABASE_URL is required to initialize Prisma.")
 }
 
+function getNormalizedDatabaseUrl(connectionString: string) {
+  try {
+    const url = new URL(connectionString)
+
+    if (
+      url.searchParams.get("sslmode") === "require" &&
+      !url.searchParams.has("uselibpqcompat")
+    ) {
+      // pg now warns that sslmode=require will change semantics later. We want
+      // the current strict behavior explicitly.
+      url.searchParams.set("sslmode", "verify-full")
+    }
+
+    return url.toString()
+  } catch {
+    return connectionString
+  }
+}
+
 const adapter = new PrismaPg({
-  connectionString: databaseUrl,
+  connectionString: getNormalizedDatabaseUrl(databaseUrl),
 })
 
 export const prisma =

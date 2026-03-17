@@ -1,32 +1,37 @@
 import Link from "next/link"
+import { AlertsList } from "@/components/dashboard/alerts-list"
+import { DashboardListCard } from "@/components/dashboard/dashboard-list-card"
 import { TemplateCard } from "@/components/dashboard/template-card"
-import { listStoredDashboards } from "@/lib/dashboard-store"
-import { sampleDashboards, dashboardTemplates } from "@/lib/mock-dashboards"
+import { UserTemplateCard } from "@/components/dashboard/user-template-card"
+import { getCurrentDashboardOwnerId } from "@/lib/auth"
+import { isClerkConfigured } from "@/lib/clerk"
+import { dashboardStrategyDefinitions } from "@/lib/dashboard-definitions"
+import {
+  listStoredDashboardsForUser,
+  listTemplatesForUser,
+} from "@/lib/dashboard-store"
+import { dashboardTemplates } from "@/lib/mock-dashboards"
 
 export const dynamic = "force-dynamic"
 
-function formatSavedTime(iso: string) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(iso))
-}
-
 export default async function DashboardPage() {
-  const savedDashboards = await listStoredDashboards()
+  const userId = await getCurrentDashboardOwnerId()
+  const savedDashboards = userId ? await listStoredDashboardsForUser(userId) : []
+  const userTemplates =
+    userId ? await listTemplatesForUser(userId) : []
 
   return (
-    <main className="bg-background px-6 py-10">
-      <div className="mx-auto flex max-w-6xl flex-col gap-10">
+    <main className="bg-background px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 sm:gap-10">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">
               Your dashboards
             </h1>
             <p className="text-sm text-muted-foreground">
-              Preview mode is active while authentication is being configured.
+              {isClerkConfigured
+                ? "Your saved research boards are tied to your account."
+                : "Preview mode is active while authentication is being configured."}
             </p>
           </div>
           <Link
@@ -38,17 +43,19 @@ export default async function DashboardPage() {
         </header>
 
         <section className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg border bg-card p-5 shadow-sm">
+          <div className="glass-panel rounded-2xl p-5">
             <p className="text-sm text-muted-foreground">Saved boards</p>
             <p className="mt-2 text-3xl font-semibold">{savedDashboards.length}</p>
           </div>
-          <div className="rounded-lg border bg-card p-5 shadow-sm">
+          <div className="glass-panel rounded-2xl p-5">
             <p className="text-sm text-muted-foreground">Starter templates</p>
             <p className="mt-2 text-3xl font-semibold">{dashboardTemplates.length}</p>
           </div>
-          <div className="rounded-lg border bg-card p-5 shadow-sm">
-            <p className="text-sm text-muted-foreground">Core research angles</p>
-            <p className="mt-2 text-3xl font-semibold">8+</p>
+          <div className="glass-panel rounded-2xl p-5">
+            <p className="text-sm text-muted-foreground">Strategy models</p>
+            <p className="mt-2 text-3xl font-semibold">
+              {dashboardStrategyDefinitions.filter((strategy) => strategy.key !== "custom").length}
+            </p>
           </div>
         </section>
 
@@ -57,119 +64,74 @@ export default async function DashboardPage() {
             <div>
               <h2 className="text-lg font-medium">Saved dashboards</h2>
               <p className="text-sm text-muted-foreground">
-                Boards you create in the builder now persist between sessions.
+                {isClerkConfigured
+                  ? "Boards you create in the builder save to your personal workspace."
+                  : "Boards you create in the builder now persist between sessions."}
               </p>
             </div>
           </div>
 
           {savedDashboards.length > 0 ? (
-            <div className="grid gap-5 lg:grid-cols-2">
+            <div className="grid gap-5 sm:grid-cols-2">
               {savedDashboards.map((dashboard) => (
-                <Link
-                  key={dashboard.id}
-                  href={`/dashboard/${dashboard.id}`}
-                  className="rounded-lg border bg-card p-5 shadow-sm transition hover:border-primary/50 hover:bg-accent/30"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-primary">
-                        {dashboard.templateName}
-                      </p>
-                      <h3 className="mt-1 text-xl font-semibold tracking-tight">
-                        {dashboard.name}
-                      </h3>
-                    </div>
-                    <span className="text-xs text-muted-foreground">
-                      {formatSavedTime(dashboard.updatedAt)}
-                    </span>
-                  </div>
-
-                  <p className="mt-3 text-sm text-muted-foreground">
-                    {dashboard.description || "No description added yet."}
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="rounded-md bg-muted px-3 py-1 text-xs text-muted-foreground">
-                      {dashboard.panels.length} panels
-                    </span>
-                    <span className="rounded-md bg-muted px-3 py-1 text-xs text-muted-foreground">
-                      Saved board
-                    </span>
-                  </div>
-                </Link>
+                <DashboardListCard key={dashboard.id} dashboard={dashboard} />
               ))}
             </div>
           ) : (
-            <div className="rounded-lg border border-dashed bg-card/50 p-8 text-center">
+            <div className="glass-panel rounded-2xl border-dashed p-8 text-center">
               <p className="text-lg font-semibold tracking-tight">
                 No saved dashboards yet
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
                 Build one from a template and it will show up here automatically.
               </p>
+              <Link
+                href="/dashboard/new"
+                className="mt-4 inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+              >
+                Create your first dashboard
+              </Link>
             </div>
           )}
         </section>
 
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
+        {userTemplates.length > 0 ? (
+          <section className="space-y-4">
             <div>
-              <h2 className="text-lg font-medium">Sample dashboards</h2>
+              <h2 className="text-lg font-medium">Your templates</h2>
               <p className="text-sm text-muted-foreground">
-                These still show the broader product direction.
+                Boards you saved as starters. Use one to create a new dashboard with the same setup.
               </p>
             </div>
-          </div>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {userTemplates.map((dashboard) => (
+                <UserTemplateCard key={dashboard.id} dashboard={dashboard} />
+              ))}
+            </div>
+          </section>
+        ) : null}
 
-          <div className="grid gap-5 lg:grid-cols-2">
-            {sampleDashboards.map((dashboard) => (
-              <Link
-                key={dashboard.id}
-                href={`/dashboard/${dashboard.id}`}
-                className="rounded-lg border bg-card p-5 shadow-sm transition hover:border-primary/50 hover:bg-accent/30"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-primary">
-                      {dashboard.name}
-                    </p>
-                    <h3 className="mt-1 text-xl font-semibold tracking-tight">
-                      {dashboard.matchup}
-                    </h3>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {dashboard.updatedAt}
-                  </span>
-                </div>
-
-                <p className="mt-3 text-sm text-muted-foreground">
-                  {dashboard.summary}
-                </p>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {dashboard.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-md bg-muted px-3 py-1 text-xs text-muted-foreground"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
+        {userId ? (
+          <section className="space-y-4">
+            <div>
+              <h2 className="text-lg font-medium">Your alerts</h2>
+              <p className="text-sm text-muted-foreground">
+                Line-move notifications and other alerts. Remove any you no longer need.
+              </p>
+            </div>
+            <AlertsList />
+          </section>
+        ) : null}
 
         <section className="space-y-4">
           <div>
             <h2 className="text-lg font-medium">Start with a template</h2>
             <p className="text-sm text-muted-foreground">
-              Begin with the questions you already ask every time you bet.
+              Pick a strategy, choose a default selector, and author prompt-backed widgets.
             </p>
           </div>
 
-          <div className="grid gap-5 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {dashboardTemplates.map((template) => (
               <TemplateCard key={template.id} template={template} />
             ))}
