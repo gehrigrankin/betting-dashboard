@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { getNbaPlayerPropMarkets, getNbaTeamSchedule } from "@/lib/sports-provider/client"
-
-type LineMoveAlertConfig = {
-  baselineLine?: number | null
-  marketName?: string | null
-}
+import { evaluateLineMove, parseLineMoveAlertConfig } from "@/lib/alert-rules"
 
 async function getCurrentPlayerPropLine(params: {
   teamExternalId: string | null
@@ -78,8 +74,7 @@ export async function GET() {
 
       examined += 1
 
-      const config = (alert.config ?? {}) as LineMoveAlertConfig
-      const baselineLine = typeof config.baselineLine === "number" ? config.baselineLine : null
+      const { baselineLine } = parseLineMoveAlertConfig(alert.config)
 
       if (baselineLine === null) {
         skipped += 1
@@ -97,10 +92,9 @@ export async function GET() {
         continue
       }
 
-      const move = currentLine - baselineLine
-      const threshold = 0.5
+      const { triggered: lineMoveTriggered, move } = evaluateLineMove(currentLine, baselineLine)
 
-      if (Math.abs(move) >= threshold) {
+      if (lineMoveTriggered) {
         triggered += 1
         console.info("[alerts/check] line_move triggered", {
           alertId: alert.id,
