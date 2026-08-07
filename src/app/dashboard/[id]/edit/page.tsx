@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation"
 import { DynamicDashboardBuilder } from "@/components/dashboard/dynamic-dashboard-builder"
+import { PageTopbar } from "@/components/layout/page-topbar"
 import { getCurrentDashboardOwnerId } from "@/lib/auth"
 import { isClerkConfigured } from "@/lib/clerk"
 import { getStoredDashboardByIdForUser } from "@/lib/dashboard-store"
@@ -30,14 +31,17 @@ export default async function EditDashboardPage({
     dashboardTemplates[0]
 
   return (
-    <main className="bg-background px-6 py-10">
-      <div className="mx-auto flex max-w-6xl flex-col gap-10">
-        <DynamicDashboardBuilder
-          initialDashboard={dashboard}
-          key={dashboard.id}
-          template={template}
-        />
-      </div>
-    </main>
+    <>
+      <PageTopbar backHref={`/dashboard/${dashboard.id}`} backLabel="Back to board" />
+      <main className="bg-background px-4 py-8 sm:px-6 sm:py-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 sm:gap-10">
+          <DynamicDashboardBuilder
+            initialDashboard={dashboard}
+            key={dashboard.id}
+            template={template}
+          />
+        </div>
+      </main>
+    </>
   )
 }

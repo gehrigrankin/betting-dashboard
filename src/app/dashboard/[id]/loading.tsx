@@ -1,9 +1,9 @@
 export default function DashboardDetailLoading() {
   return (
-    <main className="bg-background px-6 py-10">
+    <main className="bg-background px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-8">
         <header className="space-y-3">
-          <div className="h-9 w-64 animate-pulse rounded-lg bg-white/10" />
+          <div className="h-8 w-64 animate-pulse rounded-lg bg-white/10" />
           <div className="h-4 max-w-2xl animate-pulse rounded bg-white/6" />
           <div className="flex gap-2">
             <div className="h-6 w-16 animate-pulse rounded-full bg-white/6" />

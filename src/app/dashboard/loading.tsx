@@ -1,7 +1,7 @@
 export default function DashboardLoading() {
   return (
-    <main className="bg-background px-6 py-10">
-      <div className="mx-auto flex max-w-6xl flex-col gap-10">
+    <main className="bg-background px-4 py-8 sm:px-6 sm:py-10">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 sm:gap-10">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-2">
             <div className="h-8 w-48 animate-pulse rounded-lg bg-white/10" />
@@ -24,7 +24,7 @@ export default function DashboardLoading() {
             <div className="h-5 w-40 animate-pulse rounded bg-white/10" />
             <div className="h-4 w-72 animate-pulse rounded bg-white/6" />
           </div>
-          <div className="grid gap-5 lg:grid-cols-2">
+          <div className="grid gap-5 sm:grid-cols-2">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="glass-panel rounded-2xl p-5">
                 <div className="flex justify-between">
