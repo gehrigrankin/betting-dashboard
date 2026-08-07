@@ -878,7 +878,7 @@ export function DynamicDashboardBuilder({
             </div>
           ) : null}
           {entitySearch.error ? (
-            <p className="mt-3 text-sm text-rose-300">{entitySearch.error}</p>
+            <p className="mt-3 text-sm text-destructive">{entitySearch.error}</p>
           ) : null}
           {entitySearch.results.length > 0 ? (
             <div className="mt-4 space-y-2">
@@ -938,7 +938,7 @@ export function DynamicDashboardBuilder({
             </div>
           ) : null}
           {opponentSearch.error ? (
-            <p className="mt-3 text-sm text-rose-300">{opponentSearch.error}</p>
+            <p className="mt-3 text-sm text-destructive">{opponentSearch.error}</p>
           ) : null}
           {opponentSearch.results.length > 0 ? (
             <div className="mt-4 space-y-2">
@@ -963,12 +963,12 @@ export function DynamicDashboardBuilder({
         </div>
       </section>
 
-      {saveError ? <p className="text-sm text-rose-300">{saveError}</p> : null}
+      {saveError ? <p className="text-sm text-destructive">{saveError}</p> : null}
 
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-medium">Dynamic widget canvas</h2>
+            <h2 className="text-lg font-semibold tracking-tight">Dynamic widget canvas</h2>
             <p className="text-sm text-muted-foreground">
               Drag, resize, and edit the prompt-backed widgets that will render on the board.
             </p>
@@ -1046,7 +1046,7 @@ export function DynamicDashboardBuilder({
               )}
             </div>
           ) : (
-            <div className="rounded-2xl border border-dashed border-white/10 px-6 py-10 text-center">
+            <div className="rounded-2xl border border-dashed border-white/10 p-8 text-center">
               <p className="text-lg font-semibold tracking-tight">No widgets yet</p>
               <p className="mt-2 text-sm text-muted-foreground">
                 Add a dynamic widget, type what you want, and save the interpreted result into the
@@ -1200,7 +1200,7 @@ export function DynamicDashboardBuilder({
                     </Button>
                   </div>
 
-                  {draft.error ? <p className="text-sm text-rose-300">{draft.error}</p> : null}
+                  {draft.error ? <p className="text-sm text-destructive">{draft.error}</p> : null}
                   {draft.source ? (
                     <p className="text-sm text-muted-foreground">
                       {draft.source === "llm"
@@ -1254,7 +1254,7 @@ export function DynamicDashboardBuilder({
                       </div>
                     </div>
                   ) : (
-                    <div className="rounded-2xl border border-dashed border-white/10 px-6 py-10 text-center">
+                    <div className="glass-panel rounded-2xl p-5 text-center">
                       <p className="text-sm text-muted-foreground">
                         Interpret the prompt to see the widget spec and live preview.
                       </p>

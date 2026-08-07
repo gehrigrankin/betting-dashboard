@@ -62,7 +62,7 @@ export default async function DashboardPage() {
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-medium">Saved dashboards</h2>
+              <h2 className="text-lg font-semibold tracking-tight">Saved dashboards</h2>
               <p className="text-sm text-muted-foreground">
                 {isClerkConfigured
                   ? "Boards you create in the builder save to your personal workspace."
@@ -98,7 +98,7 @@ export default async function DashboardPage() {
         {userTemplates.length > 0 ? (
           <section className="space-y-4">
             <div>
-              <h2 className="text-lg font-medium">Your templates</h2>
+              <h2 className="text-lg font-semibold tracking-tight">Your templates</h2>
               <p className="text-sm text-muted-foreground">
                 Boards you saved as starters. Use one to create a new dashboard with the same setup.
               </p>
@@ -114,7 +114,7 @@ export default async function DashboardPage() {
         {userId ? (
           <section className="space-y-4">
             <div>
-              <h2 className="text-lg font-medium">Your alerts</h2>
+              <h2 className="text-lg font-semibold tracking-tight">Your alerts</h2>
               <p className="text-sm text-muted-foreground">
                 Line-move notifications and other alerts. Remove any you no longer need.
               </p>
@@ -125,7 +125,7 @@ export default async function DashboardPage() {
 
         <section className="space-y-4">
           <div>
-            <h2 className="text-lg font-medium">Start with a template</h2>
+            <h2 className="text-lg font-semibold tracking-tight">Start with a template</h2>
             <p className="text-sm text-muted-foreground">
               Pick a strategy, choose a default selector, and author prompt-backed widgets.
             </p>

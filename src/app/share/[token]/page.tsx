@@ -47,14 +47,14 @@ export default async function SharePage({ params }: SharePageProps) {
       : []
 
   return (
-    <main className="bg-background px-6 py-10">
+    <main className="bg-background px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-8">
         <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Shared board
             </p>
-            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            <h1 className="text-2xl font-semibold tracking-tight">
               {dashboard.name}
             </h1>
           </div>

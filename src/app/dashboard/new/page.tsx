@@ -30,8 +30,8 @@ export default async function NewDashboardPage({
   return (
     <>
       <PageTopbar backHref="/dashboard" backLabel="Back to dashboards" />
-      <main className="bg-background px-6 py-10">
-        <div className="mx-auto flex max-w-6xl flex-col gap-10">
+      <main className="bg-background px-4 py-8 sm:px-6 sm:py-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 sm:gap-10">
           <DynamicDashboardBuilder
             key={initialDashboard?.id ?? selectedTemplate.id}
             initialDashboard={initialDashboard ?? undefined}

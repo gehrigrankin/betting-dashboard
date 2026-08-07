@@ -314,7 +314,7 @@ export function DashboardBoardView({
     <div className="flex flex-col gap-8">
       <header className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
           <div className="min-w-0 space-y-3">
-            <h1 className="text-3xl font-semibold tracking-tight">{dashboard.name}</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">{dashboard.name}</h1>
             <p className="max-w-3xl text-sm text-muted-foreground">
               {dashboard.description || "No description added yet."}
             </p>
@@ -373,7 +373,7 @@ export function DashboardBoardView({
                       Regenerate link
                     </button>
                     <button
-                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-rose-300 hover:bg-white/5"
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-destructive hover:bg-white/5"
                       onClick={handleRevokeLink}
                       type="button"
                     >
@@ -449,7 +449,7 @@ export function DashboardBoardView({
                   </p>
                 ) : null}
                 {entitySearch.error ? (
-                  <p className="flex items-center gap-2 text-sm text-rose-300">
+                  <p className="flex items-center gap-2 text-sm text-destructive">
                     {entitySearch.error}
                     <button
                       className="text-xs underline hover:no-underline"
@@ -529,7 +529,7 @@ export function DashboardBoardView({
               </Button>
             </div>
             {resolveError ? (
-              <p className="mt-3 flex items-center gap-2 text-sm text-rose-300">
+              <p className="mt-3 flex items-center gap-2 text-sm text-destructive">
                 {resolveError}
                 <Button
                   className="h-7 px-2 text-xs"
