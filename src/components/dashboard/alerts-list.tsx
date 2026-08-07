@@ -71,7 +71,7 @@ export function AlertsList() {
 
   if (alerts.length === 0) {
     return (
-      <div className="glass-panel rounded-2xl border-dashed p-6 text-center">
+      <div className="glass-panel rounded-2xl border-dashed p-8 text-center">
         <Bell className="mx-auto size-8 text-muted-foreground/60" />
         <p className="mt-2 text-sm font-medium">No alerts yet</p>
         <p className="mt-1 text-xs text-muted-foreground">

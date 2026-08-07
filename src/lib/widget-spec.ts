@@ -86,10 +86,13 @@ export type DashboardWidgetSpec = {
   legacyStaticContent: LegacyStaticContent | null
 }
 
-type WidgetSpecInput = Partial<DashboardWidgetSpec> & {
+type WidgetSpecInput = Partial<Omit<DashboardWidgetSpec, "filters" | "comparison" | "presentation">> & {
   id: string
   prompt: string
   entityType: "team" | "player"
+  filters?: unknown
+  comparison?: unknown
+  presentation?: unknown
 }
 
 const defaultFilters: WidgetFilters = {

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { getCurrentDashboardOwnerId } from "@/lib/auth"
+import { Prisma } from "@prisma/client"
 import { prisma } from "@/lib/db"
 
 export async function GET(request: Request) {
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
         userId,
         dashboardId: payload.dashboardId ?? null,
         type,
-        config,
+        config: config as Prisma.InputJsonValue,
       },
     })
     return NextResponse.json({

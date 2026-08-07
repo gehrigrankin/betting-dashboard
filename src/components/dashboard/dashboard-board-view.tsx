@@ -593,6 +593,5 @@ export function DashboardBoardView({
           </div>
         )}
       </div>
-    </main>
   )
 }

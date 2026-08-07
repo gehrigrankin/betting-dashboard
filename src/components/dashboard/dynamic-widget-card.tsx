@@ -41,11 +41,11 @@ export function DynamicWidgetCard({ widget }: DynamicWidgetCardProps) {
       {widget.viewType === "comparison" ? (
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className="glass-chip rounded-xl px-3 py-3">
-            <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground">Primary</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Primary</p>
             <p className="mt-1 text-lg font-semibold">{widget.statValue}</p>
           </div>
           <div className="glass-chip rounded-xl px-3 py-3">
-            <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
               {widget.secondaryLabel}
             </p>
             <p className="mt-1 text-lg font-semibold">{widget.secondaryValue}</p>
@@ -56,7 +56,7 @@ export function DynamicWidgetCard({ widget }: DynamicWidgetCardProps) {
       {widget.viewType === "table" ? (
         <div className="mt-4 overflow-hidden rounded-2xl border border-white/6 bg-white/[0.03]">
           <div
-            className="grid gap-px bg-white/6 text-xs uppercase tracking-[0.12em] text-muted-foreground"
+            className="grid gap-px bg-white/6 text-xs uppercase tracking-[0.2em] text-muted-foreground"
             style={{ gridTemplateColumns: `repeat(${widget.columns.length}, minmax(0, 1fr))` }}
           >
             {widget.columns.map((column) => (

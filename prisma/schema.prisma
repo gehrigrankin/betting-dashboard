@@ -54,6 +54,7 @@ model Alert {
   userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   dashboardId  String?
+  dashboard    Dashboard? @relation(fields: [dashboardId], references: [id])
   type         String   // e.g. "line_move"
   config       Json     // e.g. { playerId, marketName, threshold }
   createdAt    DateTime @default(now())
@@ -65,6 +66,7 @@ model Dashboard {
   id           String                @id @default(cuid())
   userId       String
   user         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  alerts       Alert[]
   shareToken   String?               @unique
   name         String
   description  String?

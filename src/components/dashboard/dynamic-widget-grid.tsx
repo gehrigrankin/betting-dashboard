@@ -19,44 +19,42 @@ export function DynamicWidgetGrid({ results, layout }: DynamicWidgetGridProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   return (
-    <section className="p-1">
-      <div
-        className="grid gap-4 rounded-lg bg-transparent p-2 sm:p-4"
-        style={{
-          gridTemplateColumns: isDesktop ? "repeat(14, minmax(0, 1fr))" : "1fr",
-          gridAutoRows: "62px",
-        }}
-      >
-        {layout.map((item) => {
-          const result = resultsById.get(item.i)
-          if (!result) {
-            return null
-          }
+    <section
+      className="grid gap-4 rounded-lg bg-transparent p-4 sm:p-5"
+      style={{
+        gridTemplateColumns: isDesktop ? "repeat(14, minmax(0, 1fr))" : "1fr",
+        gridAutoRows: "62px",
+      }}
+    >
+      {layout.map((item) => {
+        const result = resultsById.get(item.i)
+        if (!result) {
+          return null
+        }
 
-          return (
-            <div
-              key={item.i}
-              style={
-                isDesktop
-                  ? {
-                      gridColumn: `${item.x + 1} / span ${item.w}`,
-                      gridRow: `${item.y + 1} / span ${item.h}`,
-                    }
-                  : {
-                      gridColumn: "1 / -1",
-                      gridRow: "auto",
-                    }
-              }
-            >
-              {result.ok ? (
-                <DynamicWidgetCard widget={result.widget} />
-              ) : (
-                <WidgetErrorCard title={result.title} error={result.error} />
-              )}
-            </div>
-          )
-        })}
-      </div>
+        return (
+          <div
+            key={item.i}
+            style={
+              isDesktop
+                ? {
+                    gridColumn: `${item.x + 1} / span ${item.w}`,
+                    gridRow: `${item.y + 1} / span ${item.h}`,
+                  }
+                : {
+                    gridColumn: "1 / -1",
+                    gridRow: "auto",
+                  }
+            }
+          >
+            {result.ok ? (
+              <DynamicWidgetCard widget={result.widget} />
+            ) : (
+              <WidgetErrorCard title={result.title} error={result.error} />
+            )}
+          </div>
+        )
+      })}
     </section>
   )
 }

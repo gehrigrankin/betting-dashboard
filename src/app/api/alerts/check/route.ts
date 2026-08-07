@@ -67,7 +67,7 @@ export async function GET() {
     for (const alert of alerts as Array<
       typeof alerts[number] & { dashboard: { entityType: string | null; entityExternalId: string | null; entityTeamExternalId: string | null; season: number | null } | null }
     >) {
-      if (!alert.dashboard || alert.dashboard.entityType !== "player") {
+      if (!alert.dashboard || alert.dashboard.entityType !== "PLAYER") {
         skipped += 1
         continue
       }
