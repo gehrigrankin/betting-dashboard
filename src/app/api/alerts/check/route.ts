@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { getNbaPlayerPropMarkets, getNbaTeamSchedule } from "@/lib/sports-provider/client"
-
-type LineMoveAlertConfig = {
-  baselineLine?: number | null
-  marketName?: string | null
-}
+import { decideLineMoveAlert, parseLineMoveAlertConfig } from "@/lib/alert-rules"
 
 async function getCurrentPlayerPropLine(params: {
   teamExternalId: string | null
@@ -67,6 +63,7 @@ export async function GET() {
     let examined = 0
     let skipped = 0
     let triggered = 0
+    let suppressed = 0
 
     for (const alert of alerts as Array<
       typeof alerts[number] & { dashboard: { entityType: string | null; entityExternalId: string | null; entityTeamExternalId: string | null; season: number | null } | null }
@@ -78,8 +75,7 @@ export async function GET() {
 
       examined += 1
 
-      const config = (alert.config ?? {}) as LineMoveAlertConfig
-      const baselineLine = typeof config.baselineLine === "number" ? config.baselineLine : null
+      const { baselineLine, lastAlertedLine } = parseLineMoveAlertConfig(alert.config)
 
       if (baselineLine === null) {
         skipped += 1
@@ -97,10 +93,14 @@ export async function GET() {
         continue
       }
 
-      const move = currentLine - baselineLine
-      const threshold = 0.5
+      const decision = decideLineMoveAlert({ currentLine, baselineLine, lastAlertedLine })
 
-      if (Math.abs(move) >= threshold) {
+      if (decision.suppressed) {
+        suppressed += 1
+        continue
+      }
+
+      if (decision.triggered) {
         triggered += 1
         console.info("[alerts/check] line_move triggered", {
           alertId: alert.id,
@@ -108,7 +108,18 @@ export async function GET() {
           marketName,
           baselineLine,
           currentLine,
-          move,
+          move: decision.move,
+        })
+
+        await prisma.alert.update({
+          where: { id: alert.id },
+          data: {
+            config: {
+              ...(alert.config as Record<string, unknown>),
+              baselineLine,
+              lastAlertedLine: currentLine,
+            },
+          },
         })
       }
     }
@@ -118,6 +129,7 @@ export async function GET() {
       examined,
       skipped,
       triggered,
+      suppressed,
     })
 
     return NextResponse.json({
@@ -126,6 +138,7 @@ export async function GET() {
       examined,
       skipped,
       triggered,
+      suppressed,
       message: "Checked line_move alerts and logged any meaningful moves.",
     })
   } catch (err) {
