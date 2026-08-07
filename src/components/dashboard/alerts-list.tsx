@@ -52,15 +52,26 @@ export function AlertsList() {
 
   if (loading) {
     return (
-      <div className="glass-panel rounded-2xl p-6">
-        <p className="text-sm text-muted-foreground">Loading alerts…</p>
+      <div className="space-y-2">
+        {[1, 2].map((i) => (
+          <div
+            key={i}
+            className="glass-panel flex items-center justify-between gap-4 rounded-xl px-4 py-3"
+          >
+            <div className="min-w-0 flex-1 space-y-2">
+              <div className="h-4 w-40 animate-pulse rounded bg-white/10" />
+              <div className="h-3 w-24 animate-pulse rounded bg-white/6" />
+            </div>
+            <div className="size-8 shrink-0 animate-pulse rounded-lg bg-white/6" />
+          </div>
+        ))}
       </div>
     )
   }
 
   if (alerts.length === 0) {
     return (
-      <div className="glass-panel rounded-2xl border-dashed p-6 text-center">
+      <div className="glass-panel rounded-2xl border-dashed p-8 text-center">
         <Bell className="mx-auto size-8 text-muted-foreground/60" />
         <p className="mt-2 text-sm font-medium">No alerts yet</p>
         <p className="mt-1 text-xs text-muted-foreground">
