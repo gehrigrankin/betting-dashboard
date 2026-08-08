@@ -3,7 +3,7 @@
 import { ClerkLoaded, ClerkLoading, SignInButton, UserButton, useAuth } from "@clerk/nextjs"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, LayoutDashboard, PanelTop, PlusSquare } from "lucide-react"
+import { Calculator, Home, LayoutDashboard, PanelTop, PlusSquare } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -86,6 +86,11 @@ export function AppSidebar() {
               href="/dashboard/new"
               icon={PlusSquare}
               label="New dashboard"
+            />
+            <SidebarLink
+              href="/parlay-calculator"
+              icon={Calculator}
+              label="Parlay calculator"
             />
           </SidebarMenu>
         </SidebarGroup>
