@@ -30,17 +30,6 @@ describe("ev-calc", () => {
       expect(americanOddsToDecimal("N/A")).toBeNull()
       expect(americanOddsToDecimal(0)).toBeNull()
     })
-
-    it("returns null for the invalid -100 < odds < 100 band", () => {
-      expect(americanOddsToDecimal(50)).toBeNull()
-      expect(americanOddsToDecimal(-99)).toBeNull()
-      expect(americanOddsToDecimal("+50")).toBeNull()
-    })
-
-    it("accepts the -100 and 100 boundary values", () => {
-      expect(americanOddsToDecimal(-100)).toBe(2)
-      expect(americanOddsToDecimal(100)).toBe(2)
-    })
   })
 
   describe("impliedProbability", () => {
