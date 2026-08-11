@@ -41,11 +41,12 @@ function OddsField({
   placeholder: string
 }) {
   return (
-    <label className="space-y-2 text-sm">
+    <label className="flex flex-col gap-2 text-sm">
       <span className="font-medium">{label}</span>
       <input
         className="field-surface h-11 w-full rounded-xl px-3 py-1.5 tabular-nums"
-        inputMode="numeric"
+        inputMode="text"
+        pattern="[+-]?[0-9]*"
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         value={value}
@@ -90,7 +91,7 @@ export function ClvCalculator() {
           placeholder="-125"
         />
 
-        <label className="space-y-2 text-sm">
+        <label className="flex flex-col gap-2 text-sm">
           <span className="font-medium">Stake ($)</span>
           <input
             className="field-surface h-11 w-full rounded-xl px-3 py-1.5 tabular-nums"
@@ -137,7 +138,7 @@ export function ClvCalculator() {
               </div>
               <div className="col-span-2">
                 <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                  Value captured on stake
+                  Edge at closing price
                 </p>
                 <p className={cn("mt-1 tabular-nums font-medium", gradeInfo.className)}>
                   {result.clvValue > 0 ? "+" : ""}

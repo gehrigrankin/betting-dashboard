@@ -7,7 +7,7 @@ function isValidProbability(value: unknown): value is number {
 export function americanOddsToDecimal(odds: string | number | null | undefined) {
   const parsed = toNumber(odds)
 
-  if (parsed === null || parsed === 0) {
+  if (parsed === null || (parsed > -100 && parsed < 100)) {
     return null
   }
 
