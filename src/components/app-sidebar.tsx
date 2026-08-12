@@ -97,6 +97,11 @@ export function AppSidebar() {
               icon={Calculator}
               label="CLV calculator"
             />
+            <SidebarLink
+              href="/dashboard/bankroll"
+              icon={Calculator}
+              label="Bankroll calculator"
+            />
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

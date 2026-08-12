@@ -16,7 +16,7 @@ describe("bankroll-calc", () => {
 
   describe("fullKellyFraction", () => {
     it("computes the Kelly stake fraction when true probability beats the market", () => {
-      expect(fullKellyFraction(-110, 0.55)).toBe(0.055)
+      expect(fullKellyFraction(-110, 0.55)).toBeCloseTo(0.055, 6)
       expect(fullKellyFraction(150, 0.5)).toBeCloseTo(0.1667, 4)
     })
 
@@ -94,6 +94,18 @@ describe("bankroll-calc", () => {
       expect(result?.hasEdge).toBe(false)
       expect(result?.appliedFraction).toBe(0)
       expect(result?.recommendedStake).toBe(0)
+    })
+
+    it("derives hasEdge from edge rather than the Kelly fraction", () => {
+      const atFairValue = calculateBankrollRecommendation({
+        bankroll: 1000,
+        odds: -110,
+        trueProbability: 11 / 21,
+        kellyPreference: "full",
+      })
+
+      expect(atFairValue?.edge).toBeCloseTo(0, 6)
+      expect(atFairValue?.hasEdge).toBe(false)
     })
 
     it("returns null when bankroll is missing or not positive", () => {

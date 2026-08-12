@@ -34,8 +34,7 @@ export function kellyMultiplier(preference: KellyFractionPreference) {
 
 export function fullKellyFraction(
   odds: string | number | null | undefined,
-  trueProbability: number | null | undefined,
-  digits = 4
+  trueProbability: number | null | undefined
 ) {
   const decimal = americanOddsToDecimal(odds)
 
@@ -49,7 +48,7 @@ export function fullKellyFraction(
     return null
   }
 
-  return round((decimal * trueProbability - 1) / b, digits)
+  return (decimal * trueProbability - 1) / b
 }
 
 export type BankrollCalculationInput = {
@@ -82,7 +81,7 @@ export function calculateBankrollRecommendation(
 
   const decimalOdds = americanOddsToDecimal(odds)
   const implied = impliedProbability(odds)
-  const kellyFraction = fullKellyFraction(odds, trueProbability, 6)
+  const kellyFraction = round(fullKellyFraction(odds, trueProbability), 6)
   const edge = calculateEdge(odds, trueProbability, 6)
   const expectedValuePerDollar = calculateExpectedValue(odds, trueProbability, 6)
 
@@ -109,6 +108,6 @@ export function calculateBankrollRecommendation(
     kellyMultiplier: multiplier,
     appliedFraction,
     recommendedStake,
-    hasEdge: kellyFraction > 0,
+    hasEdge: edge > 0,
   }
 }
