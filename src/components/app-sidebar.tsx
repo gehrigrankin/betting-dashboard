@@ -88,6 +88,11 @@ export function AppSidebar() {
               label="New dashboard"
             />
             <SidebarLink
+              href="/parlay-calculator"
+              icon={Calculator}
+              label="Parlay calculator"
+            />
+            <SidebarLink
               href="/tools/clv-calculator"
               icon={Calculator}
               label="CLV calculator"
