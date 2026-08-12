@@ -92,6 +92,11 @@ export function AppSidebar() {
               icon={Calculator}
               label="Parlay calculator"
             />
+            <SidebarLink
+              href="/tools/clv-calculator"
+              icon={Calculator}
+              label="CLV calculator"
+            />
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
