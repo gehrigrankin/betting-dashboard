@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import {
   calculateBankrollRecommendation,
   fullKellyFraction,
+  highStakeWarningThreshold,
   kellyMultiplier,
 } from "./bankroll-calc"
 
@@ -125,6 +126,19 @@ describe("bankroll-calc", () => {
           kellyPreference: "full",
         })
       ).toBeNull()
+    })
+
+    it("reports an applied fraction above the warning threshold for aggressive edges", () => {
+      const result = calculateBankrollRecommendation({
+        bankroll: 1000,
+        odds: 150,
+        trueProbability: 0.99,
+        kellyPreference: "full",
+      })
+
+      expect(result?.appliedFraction).toBeGreaterThan(
+        highStakeWarningThreshold
+      )
     })
 
     it("returns null when odds or probability are invalid", () => {

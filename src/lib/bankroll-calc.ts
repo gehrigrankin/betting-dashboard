@@ -8,6 +8,9 @@ import { round } from "@/lib/sports-provider/normalize"
 
 export type KellyFractionPreference = "full" | "half" | "quarter"
 
+// Applied fractions above this are flagged as aggressive in the UI.
+export const highStakeWarningThreshold = 0.25
+
 export const kellyFractionOptions: Array<{
   value: KellyFractionPreference
   label: string

@@ -4,9 +4,17 @@ import { useMemo, useState } from "react"
 import { cn } from "@/lib/utils"
 import {
   calculateBankrollRecommendation,
+  highStakeWarningThreshold,
   kellyFractionOptions,
   type KellyFractionPreference,
 } from "@/lib/bankroll-calc"
+
+const currencyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})
 
 export function BankrollCalculator() {
   const [bankroll, setBankroll] = useState("1000")
@@ -116,7 +124,7 @@ export function BankrollCalculator() {
             <div className="glass-chip rounded-2xl p-5 text-center">
               <p className="text-sm text-muted-foreground">Recommended stake</p>
               <p className="mt-2 text-4xl font-semibold tracking-tight">
-                ${result.recommendedStake.toLocaleString()}
+                {currencyFormatter.format(result.recommendedStake)}
               </p>
               <p
                 className={cn(
@@ -129,6 +137,18 @@ export function BankrollCalculator() {
                   : "No edge at this price — stake is $0."}
               </p>
             </div>
+
+            {result.appliedFraction > highStakeWarningThreshold ? (
+              <div className="rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2.5 text-sm text-amber-300">
+                This recommends staking{" "}
+                {(result.appliedFraction * 100).toFixed(1)}% of your bankroll
+                on a single bet — well above the ~
+                {(highStakeWarningThreshold * 100).toFixed(0)}% most
+                bankroll-management approaches treat as aggressive. Consider a
+                smaller Kelly fraction or lowering your win probability
+                estimate.
+              </div>
+            ) : null}
 
             <dl className="grid grid-cols-2 gap-3 text-sm">
               <ResultStat label="Decimal odds" value={result.decimalOdds.toFixed(2)} />
