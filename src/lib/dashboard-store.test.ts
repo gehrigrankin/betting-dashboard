@@ -384,4 +384,83 @@ describe("getStoredDashboardByIdForUser", () => {
       expect.objectContaining({ id: "w1", title: "Points", metric: "points", viewType: "stat" }),
     ])
   })
+
+  it("preserves multiple widgets' layout positions and settings on load, e.g. after UI-only changes", async () => {
+    dashboardFindFirst.mockResolvedValue(
+      baseDashboardRecord({
+        widgets: [
+          {
+            id: "w1",
+            title: "Points trend",
+            positionX: 3,
+            positionY: 1,
+            width: 6,
+            height: 4,
+            config: {
+              specVersion: 1,
+              id: "w1",
+              prompt: "show points",
+              summary: "",
+              entityType: "player",
+              entityBinding: "shared",
+              viewType: "stat",
+              metric: "points",
+              aggregation: "average",
+              filters: {
+                seasonMode: "selected",
+                sampleMode: "all",
+                sampleSize: null,
+                subjectVenue: "any",
+                opponentVenue: "any",
+                opponentId: "",
+                opponentName: "",
+                travelSpot: "any",
+                completedOnly: true,
+              },
+              comparison: null,
+              presentation: { statLabel: "PTS", precision: 1, chartType: "line", tableLimit: 8 },
+              legacyStaticContent: null,
+            },
+          },
+          {
+            id: "w2",
+            title: "Scouting notes",
+            positionX: 0,
+            positionY: 5,
+            width: 2,
+            height: 3,
+            config: {
+              description: "Watch for foul trouble",
+              value: "42",
+              kind: "checklist",
+              tone: "orange",
+              notes: ["Starts slow", "Heats up in Q3"],
+            },
+          },
+        ],
+      })
+    )
+
+    const result = await getStoredDashboardByIdForUser("dash-1", "user-abc")
+
+    expect(result?.layout).toEqual([
+      { i: "w1", x: 3, y: 1, w: 6, h: 4 },
+      { i: "w2", x: 0, y: 5, w: 2, h: 3 },
+    ])
+    expect(result?.widgetSpecs).toEqual([
+      expect.objectContaining({ id: "w1", title: "Points trend", metric: "points", viewType: "stat" }),
+      expect.objectContaining({ id: "w2", title: "Scouting notes" }),
+    ])
+    expect(result?.panels).toEqual([
+      {
+        id: "w2",
+        title: "Scouting notes",
+        description: "Watch for foul trouble",
+        value: "42",
+        kind: "checklist",
+        tone: "orange",
+        notes: ["Starts slow", "Heats up in Q3"],
+      },
+    ])
+  })
 })
