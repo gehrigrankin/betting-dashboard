@@ -1,4 +1,5 @@
 import "dotenv/config"
+import { randomUUID } from "node:crypto"
 import { expect, test, type Page } from "@playwright/test"
 import { prisma } from "@/lib/db"
 import { PREVIEW_USER_ID } from "@/lib/auth"
@@ -21,7 +22,7 @@ import { decideLineMoveAlert } from "@/lib/alert-rules"
  * or re-fire an alert.
  */
 
-const DASHBOARD_NAME = "E2E Alert Lifecycle Dashboard"
+const DASHBOARD_NAME_PREFIX = "E2E Alert Lifecycle Dashboard"
 
 // Scope to the alerts section specifically - the same dashboard also renders
 // a card in "Your dashboards" with a link to the same href, which would
@@ -37,6 +38,9 @@ function alertRowLocator(page: Page, dashboardId: string) {
 
 test.describe("alert lifecycle", () => {
   let dashboardId: string
+  // Unique per test run so concurrent runs against the shared PREVIEW_USER_ID
+  // (e.g. this file's two tests under fullyParallel) don't collide on name.
+  let dashboardName: string
 
   test.beforeEach(async () => {
     await prisma.user.upsert({
@@ -45,10 +49,11 @@ test.describe("alert lifecycle", () => {
       create: { id: PREVIEW_USER_ID },
     })
 
+    dashboardName = `${DASHBOARD_NAME_PREFIX} ${randomUUID()}`
     const dashboard = await prisma.dashboard.create({
       data: {
         userId: PREVIEW_USER_ID,
-        name: DASHBOARD_NAME,
+        name: dashboardName,
       },
     })
     dashboardId = dashboard.id
@@ -78,7 +83,7 @@ test.describe("alert lifecycle", () => {
         dashboardId,
         type: "line_move",
         config: {
-          dashboardName: DASHBOARD_NAME,
+          dashboardName,
           baselineLine,
           // Mirrors what /api/alerts/check writes back once a move triggers.
           lastAlertedLine: currentLine,
@@ -115,7 +120,7 @@ test.describe("alert lifecycle", () => {
         dashboardId,
         type: "line_move",
         config: {
-          dashboardName: DASHBOARD_NAME,
+          dashboardName,
           baselineLine,
           // Already alerted at this exact line, as if a prior check triggered.
           lastAlertedLine: currentLine,
